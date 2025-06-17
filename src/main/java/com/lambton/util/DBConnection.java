@@ -1,4 +1,4 @@
-package main.com.lambton.util;
+package com.lambton.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,10 +1,9 @@
-package main.com.lambton.dao;
+package com.lambton.dao;
 
-import main.com.lambton.model.Appointment;
-import main.com.lambton.util.DBConnection;
+import com.lambton.model.Appointment;
+import com.lambton.util.DBConnection;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

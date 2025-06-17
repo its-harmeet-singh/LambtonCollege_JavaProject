@@ -1,7 +1,7 @@
-package main.com.lambton.dao;
+package com.lambton.dao;
 
-import main.com.lambton.model.Patient;
-import main.com.lambton.util.DBConnection;
+import com.lambton.model.Patient;
+import com.lambton.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

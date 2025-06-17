@@ -1,4 +1,4 @@
-package main.com.lambton.model;
+package com.lambton.model;
 
 public class Department {
     private int id;
