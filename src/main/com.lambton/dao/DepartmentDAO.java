@@ -1,7 +1,7 @@
 package main.com.lambton.dao;
 
-import com.lambton.model.Department;
-import com.lambton.util.DBConnection;
+import main.com.lambton.model.Department;
+import main.com.lambton.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;

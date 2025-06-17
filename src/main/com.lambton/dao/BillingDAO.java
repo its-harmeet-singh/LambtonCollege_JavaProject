@@ -1,10 +1,9 @@
 package main.com.lambton.dao;
 
-import com.lambton.model.Billing;
-import com.lambton.util.DBConnection;
+import main.com.lambton.model.Billing;
+import main.com.lambton.util.DBConnection;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

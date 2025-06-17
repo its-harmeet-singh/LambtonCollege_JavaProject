@@ -1,7 +1,7 @@
 package main.com.lambton.dao;
 
-import com.lambton.model.Appointment;
-import com.lambton.util.DBConnection;
+import main.com.lambton.model.Appointment;
+import main.com.lambton.util.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
