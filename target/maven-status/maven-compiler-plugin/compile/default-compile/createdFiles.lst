@@ -1,0 +1,16 @@
+com\lambton\model\Appointment.class
+com\lambton\controller\BillingServlet.class
+com\lambton\dao\DoctorDAO.class
+com\lambton\controller\PatientServlet.class
+com\lambton\model\Billing.class
+com\lambton\model\Department.class
+com\lambton\dao\DepartmentDAO.class
+com\lambton\controller\DepartmentServlet.class
+com\lambton\model\Patient.class
+com\lambton\model\Doctor.class
+com\lambton\util\DBConnection.class
+com\lambton\dao\PatientDAO.class
+com\lambton\controller\AppointmentServlet.class
+com\lambton\dao\BillingDAO.class
+com\lambton\controller\DoctorServlet.class
+com\lambton\dao\AppointmentDAO.class
