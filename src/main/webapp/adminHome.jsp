@@ -3,20 +3,39 @@
 <html>
 <head>
   <meta charset="UTF-8"/>
-  <title>Admin Dashboard</title>
+  <title>Superuser Dashboard</title>
   <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .admin-actions .button {
+      flex: 1 1 200px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>🔧 Superuser Dashboard</h1>
-    <a href="logout" class="button">Logout</a>
-    <ul>
-      <li><a href="patients"    class="button">Manage Patients</a></li>
-      <li><a href="doctors"     class="button">Manage Doctors</a></li>
-      <li><a href="appointments"class="button">Manage Appointments</a></li>
-      <li><a href="billing"     class="button">Manage Billing</a></li>
-      <!-- add more -->
-    </ul>
+    <div class="admin-header">
+      <h1>🔧 Superuser Dashboard</h1>
+      <a href="logout" class="button">Logout</a>
+    </div>
+
+    <div class="admin-actions">
+      <a href="patients"     class="button">Manage Patients</a>
+      <a href="doctors"      class="button">Manage Doctors</a>
+      <a href="appointments" class="button">Manage Appointments</a>
+      <a href="billing"      class="button">Manage Billing</a>
+    </div>
   </div>
 </body>
 </html>

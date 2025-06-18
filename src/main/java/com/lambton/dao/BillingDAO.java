@@ -17,6 +17,31 @@ public class BillingDAO {
       "UPDATE billing SET patient_id=?,amount=?,billing_date=?,description=? WHERE id=?";
     private static final String DELETE = "DELETE FROM billing WHERE id=?";
 
+    private static final String SELECT_BY_PATIENT =
+      "SELECT * FROM billing WHERE patient_id = ? ORDER BY billing_date ASC";
+
+    public List<Billing> getByPatientId(int patientId) {
+        List<Billing> list = new ArrayList<>();
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(SELECT_BY_PATIENT)) {
+            ps.setInt(1, patientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Billing(
+                      rs.getInt("id"),
+                      rs.getInt("patient_id"),
+                      rs.getDouble("amount"),
+                      rs.getDate("billing_date").toLocalDate(),
+                      rs.getString("description")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching bills for patient", e);
+        }
+        return list;
+    }
+
     public void insertBilling(Billing b) {
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {

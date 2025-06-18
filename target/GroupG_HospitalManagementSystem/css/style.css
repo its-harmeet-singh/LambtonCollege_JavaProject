@@ -69,3 +69,15 @@ form textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;    /* space between buttons */
+  justify-content: flex-end;
+}
+
+.action-buttons .button {
+  padding: 0.4rem 0.8rem;  /* a bit tighter */
+  white-space: nowrap;     /* prevent wrapping */
+  font-size: 0.875rem;     /* slightly smaller text */
+}

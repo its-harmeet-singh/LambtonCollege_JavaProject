@@ -72,7 +72,7 @@ public class AppointmentServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = req.getParameter("action");
         int patientId = Integer.parseInt(req.getParameter("patientId"));
-        int doctorId  = Integer.parseInt(req.getParameter("doctorId"));
+        int doctorId = Integer.parseInt(req.getParameter("doctorId"));
         LocalDateTime time = LocalDateTime.parse(req.getParameter("appointmentTime"));
         String reason = req.getParameter("reason");
 
@@ -82,6 +82,21 @@ public class AppointmentServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             dao.updateAppointment(new Appointment(id, patientId, doctorId, time, reason));
         }
-        resp.sendRedirect("appointments");
+
+        // Determine where to send the user next:
+        HttpSession session = req.getSession(false);
+        String role = (session != null) ? (String) session.getAttribute("role") : null;
+
+        if ("PATIENT".equals(role)) {
+            resp.sendRedirect("patientHome");
+        } else if ("SUPERUSER".equals(role)) {
+            resp.sendRedirect("adminHome.jsp");
+        } else if ("DOCTOR".equals(role)) {
+            resp.sendRedirect("doctorHome.jsp");
+        } else {
+            // fallback to appointment list for any other context
+            resp.sendRedirect("appointments");
+        }
     }
+
 }

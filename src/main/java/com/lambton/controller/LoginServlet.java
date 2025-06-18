@@ -3,7 +3,6 @@ package com.lambton.controller;
 import com.lambton.dao.UserDAO;
 import com.lambton.dao.PatientDAO;
 import com.lambton.dao.DoctorDAO;
-import com.lambton.model.Patient;
 import com.lambton.model.Doctor;
 
 import javax.servlet.ServletException;
@@ -54,9 +53,8 @@ public class LoginServlet extends HttpServlet {
                 resp.sendRedirect("doctorHome.jsp");
                 break;
             case "PATIENT":
-                Patient pat = patientDao.getByEmail(email);
-                session.setAttribute("user", pat);
-                resp.sendRedirect("patientHome.jsp");
+                session.setAttribute("user", patientDao.getByEmail(email));
+                resp.sendRedirect("patientHome");   // triggers your new servlet
                 break;
         }
     }
