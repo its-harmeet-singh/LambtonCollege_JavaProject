@@ -15,18 +15,14 @@
     <a href="appointments?action=new" class="button">Schedule Appointment</a>
     <table>
       <tr>
-        <th>ID</th>
-        <th>Patient ID</th>
-        <th>Doctor ID</th>
-        <th>Time</th>
-        <th>Reason</th>
-        <th>Actions</th>
+        <th>ID</th><th>Patient</th><th>Doctor</th>
+        <th>Time</th><th>Reason</th><th>Actions</th>
       </tr>
       <c:forEach var="a" items="${appointments}">
         <tr>
           <td>${a.id}</td>
-          <td>${a.patientId}</td>
-          <td>${a.doctorId}</td>
+          <td>${patientMap[a.patientId]}</td>
+          <td>${doctorMap[a.doctorId]}</td>
           <td>${a.appointmentTime}</td>
           <td>${a.reason}</td>
           <td>

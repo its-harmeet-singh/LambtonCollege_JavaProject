@@ -96,4 +96,25 @@ public class DoctorDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public Doctor getByEmail(String email) {
+        String sql = "SELECT * FROM doctors WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Doctor(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("specialty"),
+                            rs.getString("phone"),
+                            rs.getString("email"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching doctor by email", e);
+        }
+        return null;
+    }
 }

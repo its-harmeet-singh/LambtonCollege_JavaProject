@@ -9,25 +9,23 @@ import java.util.List;
 
 public class PatientDAO {
 
-    private static final String INSERT = 
-        "INSERT INTO patients (name, age, gender, address) VALUES (?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO patients (name, age, gender, address) VALUES (?, ?, ?, ?)";
     private static final String SELECT_ALL = "SELECT * FROM patients";
-    private static final String SELECT_BY_ID = 
-        "SELECT * FROM patients WHERE id = ?";
-    private static final String UPDATE = 
-        "UPDATE patients SET name=?, age=?, gender=?, address=? WHERE id=?";
+    private static final String SELECT_BY_ID = "SELECT * FROM patients WHERE id = ?";
+    private static final String UPDATE = "UPDATE patients SET name=?, age=?, gender=?, address=? WHERE id=?";
     private static final String DELETE = "DELETE FROM patients WHERE id=?";
 
     public void insertPatient(Patient p) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmt = conn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, p.getName());
             stmt.setInt(2, p.getAge());
             stmt.setString(3, p.getGender());
             stmt.setString(4, p.getAddress());
             stmt.executeUpdate();
             try (ResultSet keys = stmt.getGeneratedKeys()) {
-                if (keys.next()) p.setId(keys.getInt(1));
+                if (keys.next())
+                    p.setId(keys.getInt(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -37,16 +35,15 @@ public class PatientDAO {
     public List<Patient> getAllPatients() {
         List<Patient> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_ALL);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(SELECT_ALL);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 list.add(new Patient(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getInt("age"),
-                    rs.getString("gender"),
-                    rs.getString("address")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("age"),
+                        rs.getString("gender"),
+                        rs.getString("address")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,17 +53,16 @@ public class PatientDAO {
 
     public Patient getPatientById(int id) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID)) {
+                PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Patient(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getInt("age"),
-                        rs.getString("gender"),
-                        rs.getString("address")
-                    );
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getInt("age"),
+                            rs.getString("gender"),
+                            rs.getString("address"));
                 }
             }
         } catch (SQLException e) {
@@ -77,7 +73,7 @@ public class PatientDAO {
 
     public void updatePatient(Patient p) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
+                PreparedStatement stmt = conn.prepareStatement(UPDATE)) {
             stmt.setString(1, p.getName());
             stmt.setInt(2, p.getAge());
             stmt.setString(3, p.getGender());
@@ -91,11 +87,32 @@ public class PatientDAO {
 
     public void deletePatient(int id) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE)) {
+                PreparedStatement stmt = conn.prepareStatement(DELETE)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Patient getByEmail(String email) {
+        String sql = "SELECT * FROM patients WHERE email_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Patient(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getInt("age"),
+                            rs.getString("gender"),
+                            rs.getString("address"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching patient by email", e);
+        }
+        return null;
     }
 }

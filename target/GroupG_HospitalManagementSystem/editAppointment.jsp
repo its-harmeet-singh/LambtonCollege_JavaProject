@@ -16,19 +16,25 @@
       <input type="hidden" name="action" value="update"/>
       <input type="hidden" name="id" value="${appointment.id}"/>
 
-      <label for="patientId">Patient ID</label>
-      <input type="number"
-             id="patientId"
-             name="patientId"
-             value="${appointment.patientId}"
-             required/>
+      <label for="patientId">Patient</label>
+      <select id="patientId" name="patientId" required>
+        <c:forEach var="p" items="${patients}">
+          <option value="${p.id}"
+            <c:if test="${p.id == appointment.patientId}">selected</c:if>>
+            ${p.name}
+          </option>
+        </c:forEach>
+      </select>
 
-      <label for="doctorId">Doctor ID</label>
-      <input type="number"
-             id="doctorId"
-             name="doctorId"
-             value="${appointment.doctorId}"
-             required/>
+      <label for="doctorId">Doctor</label>
+      <select id="doctorId" name="doctorId" required>
+        <c:forEach var="d" items="${doctors}">
+          <option value="${d.id}"
+            <c:if test="${d.id == appointment.doctorId}">selected</c:if>>
+            ${d.name}
+          </option>
+        </c:forEach>
+      </select>
 
       <label for="appointmentTime">Time</label>
       <input type="datetime-local"
@@ -38,9 +44,7 @@
              required/>
 
       <label for="reason">Reason</label>
-      <textarea id="reason"
-                name="reason"
-                rows="3">${appointment.reason}</textarea>
+      <textarea id="reason" name="reason" rows="3">${appointment.reason}</textarea>
 
       <button type="submit">Update</button>
     </form>

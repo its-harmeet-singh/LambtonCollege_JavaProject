@@ -15,17 +15,12 @@
     <a href="billing?action=new" class="button">Add Bill</a>
     <table>
       <tr>
-        <th>ID</th>
-        <th>Patient ID</th>
-        <th>Amount</th>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Actions</th>
+        <th>ID</th><th>Patient</th><th>Amount</th><th>Date</th><th>Description</th><th>Actions</th>
       </tr>
       <c:forEach var="b" items="${bills}">
         <tr>
           <td>${b.id}</td>
-          <td>${b.patientId}</td>
+          <td>${patientMap[b.patientId]}</td>
           <td>${b.amount}</td>
           <td>${b.billingDate}</td>
           <td>${b.description}</td>

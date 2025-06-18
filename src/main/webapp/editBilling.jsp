@@ -21,7 +21,7 @@
              id="patientId"
              name="patientId"
              value="${bill.patientId}"
-             required/>
+             required disabled />
 
       <label for="amount">Amount</label>
       <input type="number"
