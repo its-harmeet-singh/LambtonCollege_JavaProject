@@ -1,5 +1,7 @@
+D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\DoctorHomeServlet.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\LogoutServlet.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\PatientDAO.java
+D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\DiagnosisServlet.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\DoctorDAO.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\AppointmentDAO.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\BillingDAO.java
@@ -22,6 +24,7 @@ D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lamb
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\model\Department.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\PatientHomeServlet.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\DepartmentDAO.java
+D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\PrescriptionServlet.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\dao\DiagnosisDAO.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\model\Prescription.java
 D:\LambtonCollege\Project\Java\LambtonCollege_JavaProject\src\main\java\com\lambton\controller\AppointmentServlet.java

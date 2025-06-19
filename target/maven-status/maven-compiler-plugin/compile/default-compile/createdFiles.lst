@@ -11,9 +11,12 @@ com\lambton\controller\ShowBillingServlet.class
 com\lambton\controller\PatientHomeServlet.class
 com\lambton\dao\BillingDAO.class
 com\lambton\dao\AppointmentDAO.class
+com\lambton\controller\DoctorHomeServlet.class
+com\lambton\controller\PrescriptionServlet.class
 com\lambton\model\Appointment.class
 com\lambton\dao\DoctorDAO.class
 com\lambton\util\AuthFilter.class
+com\lambton\controller\DiagnosisServlet.class
 com\lambton\controller\PatientServlet.class
 com\lambton\model\Department.class
 com\lambton\dao\DiagnosisDAO.class

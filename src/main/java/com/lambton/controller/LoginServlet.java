@@ -48,13 +48,14 @@ public class LoginServlet extends HttpServlet {
                 resp.sendRedirect("adminHome.jsp");
                 break;
             case "DOCTOR":
-                Doctor doc = doctorDao.getByEmail(email);
-                session.setAttribute("user", doc);
-                resp.sendRedirect("doctorHome.jsp");
-                break;
+                    Doctor doc = doctorDao.getByEmail(email);
+                    session.setAttribute("user", doc);
+                    session.setAttribute("role", "DOCTOR");
+                    resp.sendRedirect("doctorHome");
+                    break;
             case "PATIENT":
                 session.setAttribute("user", patientDao.getByEmail(email));
-                resp.sendRedirect("patientHome");   // triggers your new servlet
+                resp.sendRedirect("patientHome");
                 break;
         }
     }

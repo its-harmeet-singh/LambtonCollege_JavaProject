@@ -81,3 +81,17 @@ form textarea {
   white-space: nowrap;     /* prevent wrapping */
   font-size: 0.875rem;     /* slightly smaller text */
 }
+
+/* form‐group wrapper for spacing */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* make inputs & textareas full width */
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+}

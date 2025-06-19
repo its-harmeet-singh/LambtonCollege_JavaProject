@@ -1,79 +1,75 @@
-<%@ page import="java.time.*,
-                 java.util.*,
-                 com.lambton.dao.AppointmentDAO,
-                 com.lambton.model.Appointment,
-                 com.lambton.model.Doctor" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%
-  Doctor doc = (Doctor)session.getAttribute("user");
-  AppointmentDAO dao = new AppointmentDAO();
-  List<Appointment> all = new ArrayList<>();
-  for (Appointment a : dao.getAllAppointments()) {
-    if (a.getDoctorId() == doc.getId()) all.add(a);
-  }
-  LocalDate today = LocalDate.now();
-  List<Appointment> todayList   = new ArrayList<>();
-  List<Appointment> upcoming    = new ArrayList<>();
-  List<Appointment> past        = new ArrayList<>();
-  for (Appointment a : all) {
-    LocalDate d = a.getAppointmentTime().toLocalDate();
-    if (d.isEqual(today))           todayList.add(a);
-    else if (d.isAfter(today))      upcoming.add(a);
-    else                             past.add(a);
-  }
-  past.sort(Comparator.comparing(Appointment::getAppointmentTime));
-  request.setAttribute("todayList", todayList);
-  request.setAttribute("upcoming", upcoming);
-  request.setAttribute("past", past);
-%>
+<%@ page contentType="text/html; charset=UTF-8"
+         isELIgnored="false" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
   <meta charset="UTF-8"/>
   <title>Doctor Home</title>
   <link rel="stylesheet" href="css/style.css"/>
-</head>
-<body>
+  <style>
+    table th, table td { white-space: nowrap; }
+    .action-buttons { display:flex; gap:.5rem; justify-content:flex-end; }
+    .button { padding:.5rem 1rem; }
+  </style>
+</head><body>
   <div class="container">
-    <h1>Welcome Dr. ${user.name}</h1>
-    <a href="logout" class="button">Logout</a>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1>Welcome Dr. ${user.name}</h1>
+      <a href="logout" class="button">Logout</a>
+    </div>
 
+    <!-- Today's Appointments -->
     <h2>Today's Appointments</h2>
     <table>
-      <tr><th>Time</th><th>Patient ID</th><th>Reason</th></tr>
+      <tr>
+        <th>Time</th><th>Patient</th><th>Reason</th><th>Actions</th>
+      </tr>
       <c:forEach var="a" items="${todayList}">
         <tr>
           <td>${a.appointmentTime}</td>
-          <td>${a.patientId}</td>
+          <td>${patientMap[a.patientId]}</td>
           <td>${a.reason}</td>
+          <td>
+            <div class="action-buttons">
+              <a href="prescription?action=new&amp;appointmentId=${a.id}"
+                 class="button">Add Rx</a>
+              <a href="diagnosis?action=new&amp;appointmentId=${a.id}"
+                 class="button">Add Dx</a>
+            </div>
+          </td>
         </tr>
       </c:forEach>
+      <c:if test="${empty todayList}">
+        <tr><td colspan="4" style="text-align:center">No appointments today.</td></tr>
+      </c:if>
     </table>
 
-    <h2>Upcoming</h2>
-    <table>
-      <tr><th>Date</th><th>Patient ID</th><th>Reason</th></tr>
-      <c:forEach var="a" items="${upcoming}">
-        <tr>
-          <td>${a.appointmentTime}</td>
-          <td>${a.patientId}</td>
-          <td>${a.reason}</td>
-        </tr>
-      </c:forEach>
-    </table>
+    <!-- Upcoming omitted… -->
 
-    <h2>Past</h2>
+    <!-- Past Appointments -->
+    <h2>Past Appointments</h2>
     <table>
-      <tr><th>Date</th><th>Patient ID</th><th>Reason</th></tr>
+      <tr>
+        <th>Date &amp; Time</th><th>Patient</th><th>Reason</th><th>Actions</th>
+      </tr>
       <c:forEach var="a" items="${past}">
         <tr>
           <td>${a.appointmentTime}</td>
-          <td>${a.patientId}</td>
+          <td>${patientMap[a.patientId]}</td>
           <td>${a.reason}</td>
+          <td>
+            <div class="action-buttons">
+              <a href="prescription?action=edit&amp;appointmentId=${a.id}"
+                 class="button">Edit Rx</a>
+              <a href="diagnosis?action=edit&amp;appointmentId=${a.id}"
+                 class="button">Edit Dx</a>
+            </div>
+          </td>
         </tr>
       </c:forEach>
+      <c:if test="${empty past}">
+        <tr><td colspan="4" style="text-align:center">No past appointments.</td></tr>
+      </c:if>
     </table>
   </div>
-</body>
-</html>
+</body></html>
