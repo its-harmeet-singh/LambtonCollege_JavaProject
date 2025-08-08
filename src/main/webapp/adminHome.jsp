@@ -35,6 +35,7 @@
       <a href="doctors"      class="button">Manage Doctors</a>
       <a href="appointments" class="button">Manage Appointments</a>
       <a href="billing"      class="button">Manage Billing</a>
+      <a href="patientSearch"   class="button">Search Patients</a>
     </div>
   </div>
 </body>

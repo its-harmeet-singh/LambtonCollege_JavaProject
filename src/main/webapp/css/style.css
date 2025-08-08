@@ -95,3 +95,13 @@ form textarea {
   box-sizing: border-box;
   font-size: 1rem;
 }
+
+.action-buttons .button {
+    display: block;          
+    margin-bottom: 6px;     
+    width: fit-content;      
+}
+
+.action-buttons .button:last-child {
+    margin-bottom: 0;       
+}

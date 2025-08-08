@@ -11,13 +11,10 @@ public class UserDAO {
     private static final String LOGIN_SQL =
       "SELECT role FROM users WHERE email_id = ? AND password = ?";
 
-    /**
-     * Returns the role (“SUPERUSER”, “DOCTOR” or “PATIENT”) if the
-     * email/password matches, or null otherwise.
-     */
+
     public String loginAndGetRole(String email, String password) {
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(LOGIN_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(LOGIN_SQL)) {
             ps.setString(1, email);
             ps.setString(2, password);
             try (ResultSet rs = ps.executeQuery()) {

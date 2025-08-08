@@ -18,7 +18,7 @@
       <input type="hidden" name="id"            value="${prescription.id}"/>
       <input type="hidden" name="appointmentId" value="${appointment.id}"/>
       <input type="hidden" name="patientId" value="${appointment.patientId}" />
-      <input type="hidden" name="doctorId"  value="${user.id}" />
+      <input type="hidden" name="doctorId"      value="${doctorId}" />
 
       <div class="form-group">
         <label>Patient</label>
@@ -32,7 +32,7 @@
         <label>Doctor</label>
         <input type="text"
                class="form-control"
-               value="Dr. ${user.name}"
+               value="Dr. ${doctorName}"
                readonly/>
       </div>
 

@@ -1,9 +1,11 @@
 package com.lambton.dao;
 
 import com.lambton.model.Patient;
+import com.lambton.model.PatientSearchRow;
 import com.lambton.util.DBConnection;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,5 +116,68 @@ public class PatientDAO {
             throw new RuntimeException("Error fetching patient by email", e);
         }
         return null;
+    }
+
+    public List<PatientSearchRow> searchPatients(String nameLike, LocalDate date, Integer doctorId) {
+        List<PatientSearchRow> out = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder(
+            "SELECT p.id AS patient_id, p.name AS patient_name, p.email_id AS phone, " +
+            "       a.id AS appointment_id, " +                      
+            "       a.appointment_time AS appointment_date, " +
+            "       a.doctor_id, d.name AS doctor_name " +
+            "FROM patients p " +
+            "LEFT JOIN appointments a ON a.patient_id = p.id " +
+            "LEFT JOIN doctors d ON d.id = a.doctor_id " +
+            "WHERE 1=1 "
+        );
+
+
+        // dynamic filters
+        if (nameLike != null && !nameLike.isBlank()) {
+            sql.append(" AND LOWER(p.name) LIKE ? ");
+        }
+        if (date != null) {
+            sql.append(" AND DATE(a.appointment_time) = ? ");
+        }
+        if (doctorId != null) {
+            sql.append(" AND a.doctor_id = ? ");
+        }
+
+        sql.append(" ORDER BY a.appointment_time IS NULL, a.appointment_time DESC, p.name ASC ");
+
+        try (Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int idx = 1;
+            if (nameLike != null && !nameLike.isBlank()) {
+                ps.setString(idx++, "%" + nameLike.toLowerCase().trim() + "%");
+            }
+            if (date != null) {
+                ps.setDate(idx++, Date.valueOf(date));
+            }
+            if (doctorId != null) {
+                ps.setInt(idx++, doctorId);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    PatientSearchRow row = new PatientSearchRow();
+                    row.setPatientId(rs.getInt("patient_id"));
+                    row.setPatientName(rs.getString("patient_name"));
+                    row.setPhone(rs.getString("phone"));
+                    Date dsql = rs.getDate("appointment_date");
+                    row.setAppointmentDate(dsql == null ? null : dsql.toLocalDate());
+                    int did = rs.getInt("doctor_id");
+                    row.setAppointmentId(rs.getInt("appointment_id"));
+                    row.setDoctorId(rs.wasNull() ? null : did);
+                    row.setDoctorName(rs.getString("doctor_name"));
+                    out.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("searchPatients failed", e);
+        }
+        return out;
     }
 }

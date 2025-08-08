@@ -24,40 +24,91 @@ public class DiagnosisServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+            throws ServletException, IOException {
 
-        // authentication check
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect("login");
             return;
         }
 
-        // load appointment
-        int apptId = Integer.parseInt(req.getParameter("appointmentId"));
+        String role = String.valueOf(session.getAttribute("role"));
+        boolean isDoctor = "DOCTOR".equalsIgnoreCase(role);
+        boolean isAdmin  = "ADMIN".equalsIgnoreCase(role) || "SUPERADMIN".equalsIgnoreCase(role);
+
+        if (!(isDoctor || isAdmin)) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        // appointmentId param
+        String apptIdStr = req.getParameter("appointmentId");
+        if (apptIdStr == null || apptIdStr.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing appointmentId");
+            return;
+        }
+        int apptId;
+        try {
+            apptId = Integer.parseInt(apptIdStr);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid appointmentId");
+            return;
+        }
+
+        // Load appointment
         Appointment appt = apptDao.getAppointmentById(apptId);
-        req.setAttribute("appointment", appt);
+        if (appt == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Appointment not found");
+            return;
+        }
 
-        // build and expose patientMap
-        Map<Integer,String> patientMap = patDao.getAllPatients()
-            .stream()
-            .collect(Collectors.toMap(Patient::getId, Patient::getName));
-        req.setAttribute("patientMap", patientMap);
+        // Resolve doctorId + doctorName
+        Integer doctorId = (Integer) session.getAttribute("doctorId");
+        String doctorName;
 
-        // expose logged-in doctor
-        req.setAttribute("user", session.getAttribute("user"));
-
-        // dispatch to new or edit JSP
-        String action = req.getParameter("action");
-        if ("edit".equals(action)) {
-            List<Diagnosis> list = diagDao.getByAppointmentId(apptId);
-            Diagnosis d = list.isEmpty() ? new Diagnosis() : list.get(0);
-            req.setAttribute("diagnosis", d);
-            req.getRequestDispatcher("editDiagnosis.jsp")
-               .forward(req, resp);
+        if (isDoctor) {
+            if (doctorId == null) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Missing doctorId in session.");
+                return;
+            }
+            if (appt.getDoctorId() != doctorId) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Not your appointment");
+                return;
+            }
+            Object u = session.getAttribute("user");
+            doctorName = (u instanceof com.lambton.model.Doctor)
+                    ? ((com.lambton.model.Doctor) u).getName()
+                    : String.valueOf(u);
         } else {
-            req.getRequestDispatcher("newDiagnosis.jsp")
-               .forward(req, resp);
+            // Admin path: use appointment's doctor
+            doctorId = appt.getDoctorId();
+            com.lambton.dao.DoctorDAO doctorDao = new com.lambton.dao.DoctorDAO();
+            com.lambton.model.Doctor d = doctorDao.getById(doctorId);
+            doctorName = (d != null) ? d.getName() : ("Doctor #" + doctorId);
+        }
+
+        // Patients map (id -> name)
+        Map<Integer, String> patientMap = patDao.getAllPatients()
+                .stream()
+                .collect(Collectors.toMap(Patient::getId, Patient::getName));
+
+        // Existing diagnosis (or empty)
+        List<Diagnosis> list = diagDao.getByAppointmentId(apptId);
+        Diagnosis d = list.isEmpty() ? new Diagnosis() : list.get(0);
+
+        // Attributes for JSP
+        req.setAttribute("appointment", appt);
+        req.setAttribute("patientMap", patientMap);
+        req.setAttribute("doctorId", doctorId);
+        req.setAttribute("doctorName", doctorName);
+        req.setAttribute("diagnosis", d);
+
+        // Route
+        String action = req.getParameter("action");
+        if ("new".equalsIgnoreCase(action)) {
+            req.getRequestDispatcher("newDiagnosis.jsp").forward(req, resp);
+        } else {
+            req.getRequestDispatcher("editDiagnosis.jsp").forward(req, resp);
         }
     }
 

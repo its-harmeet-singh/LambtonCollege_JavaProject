@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // Show login page
+        
         req.getRequestDispatcher("login.jsp").forward(req, resp);
     }
 
@@ -29,7 +29,6 @@ public class LoginServlet extends HttpServlet {
         String email = req.getParameter("email");
         String pass  = req.getParameter("password");
 
-        // 1) authenticate
         String role = userDao.loginAndGetRole(email, pass);
         if (role == null) {
             req.setAttribute("error", "Invalid email or password.");
@@ -37,20 +36,21 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // 2) store in session
         HttpSession session = req.getSession();
         session.setAttribute("role", role);
         session.setAttribute("email", email);
 
-        // 3) load the domain object and redirect to the right homepage
         switch (role) {
             case "SUPERUSER":
+                session.setAttribute("role", "ADMIN");
+                session.setAttribute("user", email);
                 resp.sendRedirect("adminHome.jsp");
                 break;
             case "DOCTOR":
                     Doctor doc = doctorDao.getByEmail(email);
                     session.setAttribute("user", doc);
                     session.setAttribute("role", "DOCTOR");
+                    session.setAttribute("doctorId", doc.getId());
                     resp.sendRedirect("doctorHome");
                     break;
             case "PATIENT":

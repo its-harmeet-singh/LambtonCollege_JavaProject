@@ -23,47 +23,106 @@ public class PrescriptionServlet extends HttpServlet {
     private PatientDAO      patDao    = new PatientDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
 
-        // must be logged in
+    // Must be logged in
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect("login");
             return;
         }
 
-        // lookup appointment
-        int apptId = Integer.parseInt(req.getParameter("appointmentId"));
-        Appointment appt = apptDao.getAppointmentById(apptId);
-        req.setAttribute("appointment", appt);
+        String role = String.valueOf(session.getAttribute("role"));
+        boolean isDoctor = "DOCTOR".equalsIgnoreCase(role);
+        boolean isAdmin  = "ADMIN".equalsIgnoreCase(role) || "SUPERADMIN".equalsIgnoreCase(role);
 
-        // build patientMap exactly like in DoctorHomeServlet
-        Map<Integer,String> patientMap = patDao.getAllPatients()
-            .stream()
-            .collect(Collectors.toMap(Patient::getId, Patient::getName));
-        req.setAttribute("patientMap", patientMap);
-
-        // also expose the logged-in doctor if you want to show their name
-        req.setAttribute("user", session.getAttribute("user"));
-
-        // now dispatch to the “new” or “edit” JSP
-        String action = req.getParameter("action");
-        if ("edit".equals(action)) {
-            List<Prescription> list = presDao.getByAppointmentId(apptId);
-            Prescription p = list.isEmpty() ? new Prescription() : list.get(0);
-            req.setAttribute("prescription", p);
-            req.getRequestDispatcher("editPrescription.jsp").forward(req,resp);
-        } else if ("new".equals(action)){
-            req.getRequestDispatcher("newPrescription.jsp").forward(req,resp);
+        // Only allow Doctor or Admin
+        if (!(isDoctor || isAdmin)) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
-        else{
-            List<Prescription> list = presDao.getByAppointmentId(apptId);
-            Prescription p = list.isEmpty() ? new Prescription() : list.get(0);
-            req.setAttribute("prescription", p);
-            req.getRequestDispatcher("editPrescription.jsp").forward(req,resp);
+
+        // Get and validate appointmentId
+        String apptIdStr = req.getParameter("appointmentId");
+        if (apptIdStr == null || apptIdStr.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing appointmentId");
+            return;
+        }
+        int apptId;
+        try {
+            apptId = Integer.parseInt(apptIdStr);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid appointmentId");
+            return;
+        }
+
+        // Load appointment
+        Appointment appt = apptDao.getAppointmentById(apptId);
+        if (appt == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Appointment not found");
+            return;
+        }
+
+        // Resolve doctor context
+        Integer sessionDoctorId = (Integer) session.getAttribute("doctorId");
+        String doctorName;
+
+        if (isDoctor) {
+            // Doctor must have doctorId and must own the appointment
+            if (sessionDoctorId == null) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Missing doctorId in session.");
+                return;
+            }
+            if (appt.getDoctorId() != sessionDoctorId) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Not your appointment");
+                return;
+            }
+            // Get doctor name from session user if it's a Doctor object
+            Object u = session.getAttribute("user");
+            if (u instanceof com.lambton.model.Doctor) {
+                doctorName = ((com.lambton.model.Doctor) u).getName();
+            } else {
+                doctorName = String.valueOf(u);
+            }
+        } else {
+            // Admin path: use the appointment's doctor
+            sessionDoctorId = appt.getDoctorId();
+            // If you have DoctorDAO available, fetch the name; else show a generic label
+            try {
+                com.lambton.dao.DoctorDAO doctorDao = new com.lambton.dao.DoctorDAO();
+                com.lambton.model.Doctor d = doctorDao.getById(sessionDoctorId);
+                doctorName = (d != null) ? d.getName() : "Unknown Doctor";
+            } catch (Exception e) {
+                doctorName = "Doctor #" + sessionDoctorId;
+            }
+        }
+
+        // Build patient map (id -> name)
+        Map<Integer, String> patientMap = patDao.getAllPatients()
+                .stream()
+                .collect(Collectors.toMap(Patient::getId, Patient::getName));
+
+        // Load existing prescription (or create empty)
+        List<Prescription> list = presDao.getByAppointmentId(apptId);
+        Prescription p = list.isEmpty() ? new Prescription() : list.get(0);
+
+        // Expose attributes for JSP
+        req.setAttribute("appointment", appt);
+        req.setAttribute("patientMap", patientMap);
+        req.setAttribute("doctorId", sessionDoctorId);  // hidden field value
+        req.setAttribute("doctorName", doctorName);     // display value
+        req.setAttribute("prescription", p);
+
+        // Route
+        String action = req.getParameter("action");
+        if ("new".equalsIgnoreCase(action)) {
+            req.getRequestDispatcher("newPrescription.jsp").forward(req, resp);
+        } else {
+            req.getRequestDispatcher("editPrescription.jsp").forward(req, resp);
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)

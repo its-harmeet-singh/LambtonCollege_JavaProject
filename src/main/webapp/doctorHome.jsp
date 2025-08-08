@@ -18,6 +18,7 @@
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <h1>Welcome Dr. ${user.name}</h1>
       <a href="logout" class="button">Logout</a>
+      <a href="patientSearch"   class="button">Search Patients</a>
     </div>
 
     <!-- Today's Appointments -->

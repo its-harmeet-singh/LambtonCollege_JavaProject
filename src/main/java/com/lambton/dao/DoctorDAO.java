@@ -138,4 +138,27 @@ public class DoctorDAO {
         }
         return list;
     }
+
+     public Doctor getById(int id) {
+        String sql = "SELECT id, name, email, specialty FROM doctors WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Doctor d = new Doctor();
+                    d.setId(rs.getInt("id"));
+                    d.setName(rs.getString("name"));
+                    d.setEmail(rs.getString("email"));
+                    d.setSpecialty(rs.getString("specialty"));
+                    return d;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching doctor by id: " + id, e);
+        }
+        return null; // Not found
+    }
 }
