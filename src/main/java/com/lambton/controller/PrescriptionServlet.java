@@ -54,8 +54,14 @@ public class PrescriptionServlet extends HttpServlet {
             Prescription p = list.isEmpty() ? new Prescription() : list.get(0);
             req.setAttribute("prescription", p);
             req.getRequestDispatcher("editPrescription.jsp").forward(req,resp);
-        } else {
+        } else if ("new".equals(action)){
             req.getRequestDispatcher("newPrescription.jsp").forward(req,resp);
+        }
+        else{
+            List<Prescription> list = presDao.getByAppointmentId(apptId);
+            Prescription p = list.isEmpty() ? new Prescription() : list.get(0);
+            req.setAttribute("prescription", p);
+            req.getRequestDispatcher("editPrescription.jsp").forward(req,resp);
         }
     }
 

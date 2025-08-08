@@ -13,6 +13,7 @@
   <div class="container">
     <h1>Billing</h1>
     <a href="billing?action=new" class="button">Add Bill</a>
+    <a href="adminHome.jsp" class="button">Go to Admin Dashboard</a>
     <table>
       <tr>
         <th>ID</th><th>Patient</th><th>Amount</th><th>Date</th><th>Description</th><th>Actions</th>

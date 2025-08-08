@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8"
          isELIgnored="false" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html><head>
   <meta charset="UTF-8"/>
@@ -63,6 +65,8 @@
                  class="button">Edit Rx</a>
               <a href="diagnosis?action=edit&amp;appointmentId=${a.id}"
                  class="button">Edit Dx</a>
+              <a href="prescription?action=view&amp;appointmentId=${a.id}"
+                 class="button">View Rx</a>
             </div>
           </td>
         </tr>

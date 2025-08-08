@@ -37,7 +37,7 @@
   <div class="container">
     <h1>Appointments</h1>
     <a href="appointments?action=new" class="button">Schedule Appointment</a>
-
+    <a href="adminHome.jsp" class="button">Go to Admin Dashboard</a>
     <table>
       <tr>
         <th>ID</th><th>Patient</th><th>Doctor</th>

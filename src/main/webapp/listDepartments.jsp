@@ -13,6 +13,7 @@
   <div class="container">
     <h1>Departments</h1>
     <a href="departments?action=new" class="button">Add Department</a>
+    <a href="adminHome.jsp" class="button">Go to Admin Dashboard</a>
     <table>
       <tr>
         <th>ID</th>

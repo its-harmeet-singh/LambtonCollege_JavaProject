@@ -13,6 +13,7 @@
   <div class="container">
     <h1>Doctors</h1>
     <a href="doctors?action=new" class="button">Add Doctor</a>
+    <a href="adminHome.jsp" class="button">Go to Admin Dashboard</a>
     <table>
       <tr>
         <th>ID</th><th>Name</th><th>Specialty</th><th>Phone</th><th>Email</th><th>Actions</th>

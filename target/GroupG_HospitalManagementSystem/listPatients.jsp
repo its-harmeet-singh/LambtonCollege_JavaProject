@@ -11,6 +11,7 @@
   <div class="container">
     <h1>Patients</h1>
     <a href="patients?action=new" class="button">Add New Patient</a>
+    <a href="adminHome.jsp" class="button">Go to Admin Dashboard</a>
     <br>
     <table>
       <tr>

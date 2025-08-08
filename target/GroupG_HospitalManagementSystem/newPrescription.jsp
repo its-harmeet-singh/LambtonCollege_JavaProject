@@ -16,6 +16,9 @@
     <form action="prescription" method="post">
       <input type="hidden" name="action"        value="insert"/>
       <input type="hidden" name="appointmentId" value="${appointment.id}"/>
+      <input type="hidden" name="patientId" value="${appointment.patientId}" />
+      <input type="hidden" name="doctorId"  value="${user.id}" />
+
 
       <div class="form-group">
         <label>Patient</label>

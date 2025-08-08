@@ -117,4 +117,25 @@ public class DoctorDAO {
         }
         return null;
     }
+
+    public List<Doctor> findAllActive() {
+        String sql = "SELECT id, name, specialty FROM doctors WHERE is_active = 1 ORDER BY name ASC";
+        List<Doctor> list = new ArrayList<>();
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Doctor d = new Doctor();
+                d.setId(rs.getInt("id"));
+                d.setName(rs.getString("name"));
+                d.setSpecialty(rs.getString("specialty"));
+                list.add(d);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

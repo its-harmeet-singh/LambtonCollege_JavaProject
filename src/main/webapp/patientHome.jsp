@@ -13,7 +13,8 @@
   <div class="container">
     <h1>Welcome ${user.name}</h1>
     <a href="logout" class="button">Logout</a>
-    <a href="appointments?action=new" class="button">Schedule Appointment</a>
+    <!-- <a href="appointments?action=new" class="button">Schedule Appointment</a> -->
+    <a href="patientBookAppointment" class="button">Book Appointment</a>
 
     <!-- Upcoming Appointments -->
     <h2>Upcoming Appointments</h2>
@@ -23,7 +24,7 @@
       </tr>
       <c:forEach var="a" items="${upcomingA}">
         <tr>
-          <td>${a.appointmentTime}</td>
+          <td>${timeMap[a.id]}</td>
           <td>${doctorMap[a.doctorId]}</td>
           <td>${a.reason}</td>
           <td>
@@ -42,7 +43,7 @@
       </tr>
       <c:forEach var="a" items="${pastA}">
         <tr>
-          <td>${a.appointmentTime}</td>
+          <td>${timeMap[a.id]}</td>
           <td>${doctorMap[a.doctorId]}</td>
           <td>${a.reason}</td>
           <td>

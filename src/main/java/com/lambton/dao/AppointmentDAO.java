@@ -96,4 +96,29 @@ public class AppointmentDAO {
             throw new RuntimeException(e);
         }
     }
+
+    // AppointmentDAO.java
+    public void insertForPatient(int patientId, int doctorId,
+                                java.time.LocalDate date,
+                                java.time.LocalTime time,
+                                String reason) throws SQLException {
+
+        String sql = "INSERT INTO appointments " +
+                    "(patient_id, doctor_id, appointment_time, reason) " +
+                    "VALUES (?, ?, ?, ?)";
+
+        try (Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, patientId);
+            ps.setInt(2, doctorId);
+
+            java.time.LocalDateTime dt = java.time.LocalDateTime.of(date, time);
+            ps.setTimestamp(3, java.sql.Timestamp.valueOf(dt));
+
+            ps.setString(4, (reason == null ? "" : reason.trim()));
+            ps.executeUpdate();
+        }
+    }
+
 }

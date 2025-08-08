@@ -54,7 +54,10 @@ public class LoginServlet extends HttpServlet {
                     resp.sendRedirect("doctorHome");
                     break;
             case "PATIENT":
-                session.setAttribute("user", patientDao.getByEmail(email));
+                var patient = patientDao.getByEmail(email);
+                session.setAttribute("user", patient);
+                session.setAttribute("role", "PATIENT");
+                session.setAttribute("patientId", patient.getId());
                 resp.sendRedirect("patientHome");
                 break;
         }
